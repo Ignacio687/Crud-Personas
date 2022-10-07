@@ -7,21 +7,20 @@ import os
 class PersonaService_FileManagementTests(unittest.TestCase):
 
     def setUp(self):
-        self.folderPath = os.path.abspath('Python\\Computacion_I\\Repositories\\asignedRepositories\\Personas\\serviceTXTFiles')
-        self.service = FileService(self.folderPath)
+        self.service = FileService()
+        self.folderPath = self.service.filesFolderPath
+        self.pathFormat = '\\' if '\\' in self.service.filesFolderPath else '/'
         self.eraseFiles()
 
     def eraseFiles(self):
         try:
             for fileName in os.listdir(self.folderPath):
-                pathFormat = '\\' if '\\' in self.folderPath else '/'
-                os.remove(self.folderPath+pathFormat+fileName)
+                os.remove(self.folderPath+self.pathFormat+fileName)
         except FileNotFoundError:
             exit
 
     def createFile(self, fileName):
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        TXTTestFile = open(self.folderPath+pathFormat+str(fileName)+'.txt','a')
+        TXTTestFile = open(self.folderPath+self.pathFormat+str(fileName)+'.txt','a')
         TXTTestFile.close()
 
     def test_zzzErraseAllResidualFiles(self):
@@ -56,8 +55,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
     def test_DeleteFile(self):
         self.createFile('Users')
         self.service.deleteFile('Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        self.assertFalse(os.path.exists(f'{self.folderPath}{pathFormat}Users.txt'))
+        self.assertFalse(os.path.exists(f'{self.folderPath}{self.pathFormat}Users.txt'))
             
     def test_DeleteFile_FileNotFound(self):
         with self.assertRaises(FileNotFoundError):
@@ -65,8 +63,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
     
     def test_SearchPersona(self):
         self.createFile('Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'w') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'w') as file:
             file.write('pedro\n')
             file.write('1234\n')
             file.write('Ramirez Pedro, DNI: 44572902\n')
@@ -76,8 +73,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
     
     def test_SearchPersona_MoreThanOne(self):
         self.createFile('Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'w') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'w') as file:
             for data in ['Chaves Pedro, DNI: 5794315\n', '1234\n',
             'Ramirez Pedro, DNI: 44572902\n', 'adasd1123\n', 'Chaves Jose, DNI: 1576421\n']:
                 file.write(data)
@@ -88,8 +84,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
 
     def test_SearchPersona_PersonaNotFound(self):
         self.createFile('Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'w') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'w') as file:
             file.write('pedro\n')
             file.write('1234\n')
             file.write('Ramirez Pedro, DNI: 44572902\n')
@@ -108,8 +103,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
         self.createFile('Users')
         self.service.personas[44572902] = Persona(44572902, 'Ramirez', 'Pedro')
         self.service.addInFile(44572902, 'Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt') as file:
             self.assertEqual(file.read(),'Ramirez Pedro, DNI: 44572902\n')
 
     def test_AddMultiplePersonaToFile(self):
@@ -118,8 +112,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
             self.service.personas[DNI] = Persona(DNI, lastName, name)
         for persona in [44500924, 44572902, 44582659]:
             self.service.addInFile(persona, 'Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt') as file:
             self.assertEqual(file.read(),'Brasolin Juan, DNI: 44500924\n'
             +'Ramirez Pedro, DNI: 44572902\nBoldrini Jose, DNI: 44582659\n')
 
@@ -147,8 +140,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
     def test_ReadFile_OneLine(self):
         self.createFile('Users')
         self.service.personas[44572902] = Persona(44572902, 'Ramirez', 'Pedro')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'w') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'w') as file:
             file.write(str(self.service.personas[44572902])+'\n')
         self.assertEqual(self.service.readFile('Users'),
         'Ramirez Pedro, DNI: 44572902')
@@ -157,8 +149,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
         self.createFile('Users')
         for DNI, lastName, name in [44500924, 'Brasolin' , 'Juan'], [44572902, 'Ramirez', 'Pedro'], [44582659, 'Boldrini', 'Jose']:
             self.service.personas[DNI] = Persona(DNI, lastName, name)
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'w') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'w') as file:
             for persona in [44500924, 44572902, 44582659]:
                 file.write(str(self.service.personas[persona])+'\n')
         self.assertEqual(self.service.readFile('Users'),
@@ -174,29 +165,26 @@ class PersonaService_FileManagementTests(unittest.TestCase):
         for DNI, lastName, name in [44500924, 'Brasolin' , 'Juan'], [44572902, 'Ramirez', 'Pedro'], [44582659, 'Boldrini', 'Jose']:
             self.service.personas[DNI] = Persona(DNI, lastName, name)
         self.service.saveAllPersonaToFile('Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt') as file:
             self.assertEqual(file.read(),'Brasolin Juan, DNI: 44500924\n'
             +'Ramirez Pedro, DNI: 44572902\nBoldrini Jose, DNI: 44582659\n')
 
     def test_SaveAllPersonaToFile_PersonasEmpty(self):
         self.createFile('Users')
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'w') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'w') as file:
             file.write('Brasolin Juan, DNI: 44500924\n')
         self.service.saveAllPersonaToFile('Users')
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'r') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'r') as file:
             self.assertEqual(file.read(),'Brasolin Juan, DNI: 44500924\n')
 
     def test_SaveAllPersonaToFil_SomePersonaAlreadyExists(self):
         self.createFile('Users')
         for DNI, lastName, name in [44500924, 'Brasolin' , 'Juan'], [44572902, 'Ramirez', 'Pedro'], [44582659, 'Boldrini', 'Jose']:
             self.service.personas[DNI] = Persona(DNI, lastName, name)
-        pathFormat = '\\' if '\\' in self.folderPath else '/'
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'w') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'w') as file:
             file.write('Brasolin Juan, DNI: 44500924\n')
         self.service.saveAllPersonaToFile('Users')
-        with open(f'{self.folderPath}{pathFormat}Users.txt', 'r') as file:
+        with open(f'{self.folderPath}{self.pathFormat}Users.txt', 'r') as file:
             self.assertEqual(file.read(),'Brasolin Juan, DNI: 44500924\n'
             +'Ramirez Pedro, DNI: 44572902\nBoldrini Jose, DNI: 44582659\n')
 
