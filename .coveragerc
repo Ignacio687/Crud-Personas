@@ -1,0 +1,9 @@
+# .coveragerc to control coverage.py
+[run]
+omit = 
+    venv/*
+    .*
+    README.md
+    requirements.txt
+    */__init__.py
+    run.py
