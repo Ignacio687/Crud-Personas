@@ -32,7 +32,7 @@ class FileService(PersonaService):
 
     def searchAllFiles(self):
         if len(os.listdir(self.filesFolderPath)) != 0:
-            return '; '.join(os.listdir(self.filesFolderPath))
+            return '; '.join(sorted(os.listdir(self.filesFolderPath)))
         else:
             raise FileNotFoundError('There are no files in the specified directory')
 

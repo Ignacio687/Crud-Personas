@@ -15,8 +15,7 @@ class PersonaService_FileManagementTests(unittest.TestCase):
     def eraseFiles(self):
         try:
             for fileName in os.listdir(self.folderPath):
-                if '.txt' in fileName:
-                    os.remove(self.folderPath+self.pathFormat+fileName)
+                os.remove(self.folderPath+self.pathFormat+fileName)
         except FileNotFoundError:
             exit
 
