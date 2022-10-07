@@ -7,8 +7,8 @@ import os
 class PersonaService_FileManagementTests(unittest.TestCase):
 
     def setUp(self):
-        self.folderPath = os.path.abspath('Python\\Computacion_I\\Repositories\\asignedRepositories\\Personas\\serviceTXTFiles')
-        self.service = FileService(self.folderPath)
+        self.service = FileService()
+        self.folderPath = self.service.filesFolderPath
         self.eraseFiles()
 
     def eraseFiles(self):

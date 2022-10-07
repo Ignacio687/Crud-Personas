@@ -17,8 +17,6 @@ class PersonaService():
                 raise PersonaExistsError('This person is already on the sistem')
         except KeyError:
             self.personas[DNI] = Persona(DNI, lastName, name)
-        else:
-            self.personas[DNI] = Persona(DNI, lastName, name)
 
     def searchPersona(self, searchParameter):
         try:

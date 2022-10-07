@@ -1,7 +1,6 @@
 from main.personaService import PersonaService
 import os 
 
-
 class PersonaExistsInFileError(Exception):
     pass
 
@@ -10,10 +9,9 @@ class PersonaNotFoundInFileError(Exception):
 
 class FileService(PersonaService):
 
-    def __init__(self, filesFolderPath):
+    def __init__(self, filesFolderPath=os.path.abspath('main/serviceTXTFiles')):
         super().__init__()
         self.filesFolderPath = filesFolderPath
-
 
     def createFile(self, fileName):
         try:
